@@ -1,0 +1,24 @@
+.rect-drawer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+}
+.rect-drawer .myIcon {
+  font-size: 24px;
+}
+.rect-drawer .bbox {
+  cursor: pointer;
+}
+.rect-drawer .bbox:hover {
+  background-color: fade(antiquewhite, 60%);
+}
+.rect-drawer .working {
+  background-color: antiquewhite !important;
+}
+.rect-drawer .geometry {
+  background-color: blue;
+}
+.rect-drawer .geometry:hover {
+  background-color: #ffff00dd;
+}

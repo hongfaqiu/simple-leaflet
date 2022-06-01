@@ -1,0 +1,42 @@
+.searchPanel {
+  left: 50px;
+  top: 50px;
+  width: 400px;
+  min-height: 400px;
+  max-height: 600px;
+  position: absolute;
+  overflow: auto;
+  background: white;
+  border-radius: 4px;
+  box-shadow: #0d1a2633 0 4px 8px 0;
+  padding: 10px;
+}
+
+.searchPanel .header {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.searchPanel .header .title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.searchPanel .header .close-btn {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+
+.searchPanel .form-containter {
+  padding-right: 30px;
+}
+
+.searchPanel  .form-containter .drawer {
+  position: absolute;
+  right: 30px;
+}
+
+.searchPanel .submit {
+  margin-right: 10px;
+}
