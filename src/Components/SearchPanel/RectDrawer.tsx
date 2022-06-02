@@ -1,32 +1,23 @@
 import { Tag } from 'antd';
 import L, { LeafletEventHandlerFn } from 'leaflet';
 import { useEffect, useState } from 'react';
-import { MapObj } from '../../Utils/Map';
 
+import { MapObj } from '../../Utils/Map';
 import './RectDrawer.css';
 
 interface RectDrawerProps {
-  onChange?: (bound: {
-    minx: number
-    maxx: number
-    miny: number
-    maxy: number
-  } | null) => void;
+  boundary?: string
+  onChange?: (coors: [number, number][] | null) => void
 }
 const RectDrawer: React.FC<RectDrawerProps> = props => {
-  const { onChange } = props;
+  const { boundary, onChange } = props;
 
   const [working, setWorking] = useState(false);
 
   const callback: LeafletEventHandlerFn = (e) => {
-    const bounds = (e.layer as any)._bounds
+    const coors: [number, number][] = e.layer._latlngs[0].map((item: L.LatLng) => [item.lng, item.lat])
     if (onChange) {
-      onChange({
-        minx: bounds._southWest.lng,
-        maxx: bounds._northEast.lng,
-        miny: bounds._southWest.lat,
-        maxy: bounds._northEast.lat,
-      })
+      onChange(coors)
     }
     MapObj?.map.off(L.Draw.Event.CREATED, callback)
     setWorking(false)
@@ -47,7 +38,7 @@ const RectDrawer: React.FC<RectDrawerProps> = props => {
       <Tag
         onClick={() => setWorking(val => !val)}
         className={`bbox ${working && 'working'}`}>
-        {working ? '绘制中' : '绘制'}
+        {working ? '绘制中' : (boundary ? '重绘' : '绘制')}
       </Tag>
     </div>
   )

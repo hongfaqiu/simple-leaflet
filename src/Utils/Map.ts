@@ -1,4 +1,4 @@
-import L, { LeafletEventHandlerFn } from 'leaflet'
+import L from 'leaflet'
 import 'leaflet-draw'
 import 'leaflet-draw/dist/leaflet.draw.css'
 import 'leaflet/dist/leaflet.css'
@@ -17,9 +17,8 @@ export default class LeafletMap {
   map: L.DrawMap;
   center: [number, number];
   drawControl: L.Control.Draw
-  rectAngelDrawer: L.Draw.Rectangle
+  polygonDrawer: L.Draw.Rectangle
   layers: L.Layer[] = []
-  private _rectDrawCallback?: L.LeafletEventHandlerFn
 
   constructor(container: string, options?: {
     center?: [number, number]
@@ -35,7 +34,7 @@ export default class LeafletMap {
     this.drawControl = new L.Control.Draw({
       position: 'topright',
     }).addTo(this.map)
-    this.rectAngelDrawer = new L.Draw.Rectangle(this.map)
+    this.polygonDrawer = new L.Draw.Polygon(this.map)
     this.initMap()
   }
 
@@ -46,14 +45,23 @@ export default class LeafletMap {
       attribution: '© Amap'
     }).addTo(this.map)
     this.map.zoomControl.setPosition('topright')
+    this.map.on(L.Draw.Event.CREATED, e => {
+      this.addLayer(e.layer)
+    })
   }
 
   drawRectangle() {
-    this.rectAngelDrawer.enable()
+    this.removeAllLayers()
+    this.polygonDrawer.enable()
   }
 
   stopDrawRectangle() {
-    this.rectAngelDrawer.disable()
+    this.polygonDrawer.disable()
+  }
+
+  addLayer(layer: L.Layer) {
+    this.map.addLayer(layer)
+    this.layers.push(layer)
   }
 
   removeAllLayers() {
@@ -76,8 +84,8 @@ export default class LeafletMap {
       onEachFeature: function (feature, layer) {
         layer.bindPopup(`<pre>${JSON.stringify(feature.properties, null, 2)}</pre>`)
       }
-    }).addTo(this.map)
-    this.layers.push(layer)
+    })
+    this.addLayer(layer)
   }
 
   destory() {

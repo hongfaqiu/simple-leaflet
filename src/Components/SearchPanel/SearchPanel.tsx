@@ -1,11 +1,12 @@
 import { CloseOutlined } from '@ant-design/icons';
-import { Button, Col, DatePicker, Divider, Form, Input, InputNumber, message, Row } from 'antd'
+import { Button, Col, DatePicker, Divider, Form, Input, InputNumber, message, notification, Row } from 'antd'
 import { Moment } from 'moment'
 import { useState } from 'react';
+
 import { fetchGeoJSON } from '../../service/map';
+import { calculateRange, coors2Boundary } from '../../Utils/chore';
 import { MapObj } from '../../Utils/Map';
 import RectDrawer from './RectDrawer';
-
 import './SearchPanel.css'
 
 const { RangePicker } = DatePicker;
@@ -22,9 +23,10 @@ type QueryParams = {
 const SearchPanel = () => {
   const [form] = Form.useForm()
   const [loading, setLoading] = useState(false)
+  const [boundary, setBoundary] = useState<string>()
 
   const switchPanel = (val: boolean) => {
-    
+    message.info('coming soon')
   }
 
   const onFinish = async (values: QueryParams) => {
@@ -38,7 +40,13 @@ const SearchPanel = () => {
       endTime: dateRange?.[1].format('YYYY-MM-DD'),
     }
     setLoading(true)
-    console.log(params);
+    notification.open({
+      message: 'Params',
+      description:
+        <pre>
+          {JSON.stringify({ ...params, boundary }, null, 2)}
+        </pre>
+    })
     try {
       const geojson = await fetchGeoJSON(url)
       MapObj?.removeAllLayers()
@@ -46,7 +54,7 @@ const SearchPanel = () => {
       message.success('添加图层成功')
       setLoading(false)
     } catch {
-      message.success('添加图层失败')
+      message.error('添加图层失败')
       setLoading(false)
     }
     
@@ -55,6 +63,7 @@ const SearchPanel = () => {
   const reset = () => {
     MapObj?.removeAllLayers()
     form.resetFields()
+    setBoundary(undefined)
   }
 
   const extendOptions = [
@@ -124,8 +133,21 @@ const SearchPanel = () => {
           <Row >
             <div className="drawer">
               <RectDrawer
+                boundary={boundary}
                 onChange={val => {
-                  form.setFieldsValue(val)
+                  if (val) {
+                    setBoundary(coors2Boundary(val))
+                    const range = calculateRange(val)
+                    form.setFieldsValue(range)
+                  } else {
+                    setBoundary(undefined)
+                    form.setFieldsValue({
+                      minx: -180,
+                      maxx: 180,
+                      miny: -90,
+                      maxy: 90
+                    })
+                  }
                 }}
               />
             </div>
