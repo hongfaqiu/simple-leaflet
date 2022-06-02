@@ -48,6 +48,7 @@ export default class LeafletMap {
     this.map.on(L.Draw.Event.CREATED, e => {
       this.addLayer(e.layer)
     })
+    this.map.attributionControl.setPrefix(false)
   }
 
   drawRectangle() {
