@@ -18,6 +18,7 @@ export default class LeafletMap {
   center: [number, number];
   drawControl: L.Control.Draw
   polygonDrawer: L.Draw.Rectangle
+  circleDrawer: L.Draw.Circle
   layers: L.Layer[] = []
 
   constructor(container: string, options?: {
@@ -35,11 +36,12 @@ export default class LeafletMap {
       position: 'topright',
     }).addTo(this.map)
     this.polygonDrawer = new L.Draw.Polygon(this.map)
+    this.circleDrawer = new L.Draw.Circle(this.map)
     this.initMap()
   }
 
   initMap() {
-    L.tileLayer('https://webrd02.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+    L.tileLayer('https://webrd02.is.autonavi.com/appmaptile?lang=en&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
       minZoom: 1,
       maxZoom: 16,
       attribution: '© Amap'
@@ -56,8 +58,17 @@ export default class LeafletMap {
     this.polygonDrawer.enable()
   }
 
+  drawCircle() {
+    this.removeAllLayers()
+    this.circleDrawer.enable()
+  }
+
   stopDrawRectangle() {
     this.polygonDrawer.disable()
+  }
+
+  stopDrawCircle() {
+    this.circleDrawer.disable()
   }
 
   addLayer(layer: L.Layer) {
