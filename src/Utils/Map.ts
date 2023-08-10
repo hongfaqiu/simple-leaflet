@@ -30,6 +30,7 @@ export default class LeafletMap {
       center: this.center,
       zoom: 4,
       renderer: L.canvas(),
+      minZoom: 3
     })
     this.map.setView(this.center)
     this.drawControl = new L.Control.Draw({
